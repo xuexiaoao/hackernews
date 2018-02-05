@@ -1,5 +1,7 @@
 import React  from 'react';
 import { sortBy } from 'lodash'
+import FontAwesomeIcon from '@fortawesome/react-fontawesome'
+import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import Button  from '../Button'
 import './index.css';
@@ -12,17 +14,25 @@ const SORTS = {
   POINTS: list => sortBy(list, 'points').reverse(),
 };
 
-const Sort = ({ sortKey, activeSortKey,onSort, children }) =>{
-  const sortClass = ['button-inline'];
-
-  if (sortKey === activeSortKey) {
-    sortClass.push('button-active');
-  }
+const Sort = ({ sortKey, activeSortKey,onSort,isSortReverse, children }) =>{
+  const sortClass = classNames(
+   'button-inline',
+   { 'button-active': sortKey === activeSortKey }
+ );
+ let icon;
+ if(sortKey === activeSortKey){
+   if(isSortReverse){
+     icon = <FontAwesomeIcon icon="arrow-down" />
+   }else{
+     icon = <FontAwesomeIcon icon="arrow-up" />
+   }
+ }
   return(
   <Button onClick={() => onSort(sortKey)}
-  className={sortClass.join(' ')}
+  className={sortClass}
   >
     {children}
+    {icon}
   </Button>)
 }
 
@@ -50,6 +60,7 @@ const Table = ({ list,sortKey,isSortReverse,onSort,onDismiss }) =>{
         <Sort
           sortKey={'TITLE'}
           onSort={onSort}
+          isSortReverse={isSortReverse}
           activeSortKey={sortKey}
         >
           Title
@@ -59,6 +70,7 @@ const Table = ({ list,sortKey,isSortReverse,onSort,onDismiss }) =>{
         <Sort
           sortKey={'AUTHOR'}
           onSort={onSort}
+          isSortReverse={isSortReverse}
           activeSortKey={sortKey}
         >
           Author
@@ -68,6 +80,7 @@ const Table = ({ list,sortKey,isSortReverse,onSort,onDismiss }) =>{
         <Sort
           sortKey={'COMMENTS'}
           onSort={onSort}
+          isSortReverse={isSortReverse}
           activeSortKey={sortKey}
         >
           Comments
@@ -77,6 +90,7 @@ const Table = ({ list,sortKey,isSortReverse,onSort,onDismiss }) =>{
         <Sort
           sortKey={'POINTS'}
           onSort={onSort}
+          isSortReverse={isSortReverse}
           activeSortKey={sortKey}
         >
           Points
