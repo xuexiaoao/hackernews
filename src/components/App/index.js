@@ -22,6 +22,13 @@ fontawesome.library.add(brands, faCoffee, faCog, faSpinner, faQuoteLeft, faSquar
 const Loading = () =>
   <FontAwesomeIcon icon="spinner" />
 
+const withLoading  = (Component) => ({isLoading, ...rest}) =>
+  isLoading ?
+  <Loading />:
+ <Component {...rest}/>
+
+ const ButtonWithLoading = withLoading(Button);
+
 class App extends Component {
 
 constructor(props){
@@ -126,12 +133,11 @@ componentDidMount(){
           />
         }
         <div className="interactions">
-        {isLoading ?
-          <Loading />:
-          <Button onClick={()=>this.fetchSearchTopStories(searchKey,page+1)} >
+          <ButtonWithLoading
+            isLoading={isLoading}
+            onClick={()=>this.fetchSearchTopStories(searchKey,page+1)} >
           More
-          </Button>
-        }
+          </ButtonWithLoading>
         </div>
       </div>
     );
