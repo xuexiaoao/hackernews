@@ -7,27 +7,12 @@ import Search from '../Search'
 import Table from '../Table'
 import Button from '../Button'
 import './index.css';
-import {
-  DEFAULT_QUERY,
-  DEFAULT_HPP,
-  PATH_BASE,
-  PATH_SEARCH,
-  PARAM_SEARCH,
-  PARAM_PAGE,
-  PARAM_HPP,
-} from '../../constants';
+import {withLoading,updateSearchTopStoriesState,dismissState} from '../hoc'
+import {DEFAULT_QUERY,DEFAULT_HPP,PATH_BASE,PATH_SEARCH,PARAM_SEARCH,PARAM_PAGE,PARAM_HPP} from '../../constants';
 
 fontawesome.library.add(brands, faCoffee, faCog, faSpinner, faQuoteLeft, faSquare, faCheckSquare)
+const ButtonWithLoading = withLoading(Button);
 
-const Loading = () =>
-  <FontAwesomeIcon icon="spinner" />
-
-const withLoading  = (Component) => ({isLoading, ...rest}) =>
-  isLoading ?
-  <Loading />:
- <Component {...rest}/>
-
- const ButtonWithLoading = withLoading(Button);
 
 class App extends Component {
 
@@ -49,15 +34,7 @@ constructor(props){
 }
 
 onDismiss(id){
-  const {searchKey,results}= this.state;
-  const {hits,page} = results[searchKey]
-
-  const isNotId = item => item.objectID !== id;
-  const updatedHits = hits.filter(isNotId);
-  this.setState({
-    results:{...results,
-      [searchKey]:{hits:updatedHits,page}}
-  });
+  this.setState(dismissState(id));
 }
 
 onSearchChange(event) {
@@ -68,15 +45,7 @@ onSearchChange(event) {
 
 setSearchTopStories(result){
   const {hits,page} = result;
-  const {searchKey,results} = this.state;
-  const oldHits = results && results[searchKey]?results[searchKey].hits:[];
-  const updatedHits = [...oldHits,...hits];
-  this.setState({
-    results:{...results,
-    [searchKey]:{hits:updatedHits,page}
-    },
-    isLoading: false
-  });
+  this.setState(updateSearchTopStoriesState(hits, page));
 }
 
 fetchSearchTopStories(searchTerm,page=0){
