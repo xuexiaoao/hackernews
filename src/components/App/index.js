@@ -38,9 +38,7 @@ constructor(props){
     searchKey:'',
     searchTerm: DEFAULT_QUERY,
     error:null,
-    isLoading: false,
-    sortKey: 'NONE',
-    isSortReverse: false
+    isLoading: false
   }
   this.onDismiss=this.onDismiss.bind(this);
   this.onSearchChange = this.onSearchChange.bind(this);
@@ -48,7 +46,6 @@ constructor(props){
   this.fetchSearchTopStories = this.fetchSearchTopStories.bind(this);
   this.onSearchSubmit = this.onSearchSubmit.bind(this);
   this.needsToSearchTopStories = this.needsToSearchTopStories.bind(this);
-  this.onSort = this.onSort.bind(this);
 }
 
 onDismiss(id){
@@ -103,11 +100,6 @@ needsToSearchTopStories(searchTerm){
   return !this.state.results[searchTerm];
 }
 
-onSort(sortKey) {
-  const isSortReverse  = this.state.sortKey === sortKey && !this.state.isSortReverse;
-    this.setState({ sortKey,isSortReverse });
-  }
-
 
 componentDidMount(){
   const {searchTerm} = this.state;
@@ -116,8 +108,7 @@ componentDidMount(){
 }
 
   render() {
-    console.log(this.state);
-    const {searchTerm,results,searchKey,error,isLoading,sortKey,isSortReverse} = this.state;
+    const {searchTerm,results,searchKey,error,isLoading} = this.state;
     const page = (results && results[searchKey] && results[searchKey].page) || 0;
     const list = (results && results[searchKey] && results[searchKey].hits) || [];
 
@@ -138,9 +129,6 @@ componentDidMount(){
           </div>:
           <Table
           list={list}
-          sortKey={sortKey}
-          onSort={this.onSort}
-          isSortReverse={isSortReverse}
           onDismiss={this.onDismiss}
           />
         }

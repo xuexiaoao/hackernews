@@ -1,4 +1,4 @@
-import React  from 'react';
+import React, { Component }  from 'react';
 import { sortBy } from 'lodash'
 import FontAwesomeIcon from '@fortawesome/react-fontawesome'
 import classNames from 'classnames';
@@ -22,9 +22,9 @@ const Sort = ({ sortKey, activeSortKey,onSort,isSortReverse, children }) =>{
  let icon;
  if(sortKey === activeSortKey){
    if(isSortReverse){
-     icon = <FontAwesomeIcon icon="arrow-down" />
-   }else{
      icon = <FontAwesomeIcon icon="arrow-up" />
+   }else{
+     icon = <FontAwesomeIcon icon="arrow-down" />
    }
  }
   return(
@@ -48,18 +48,34 @@ const smallColumn = {
   width: '10%',
 };
 
-const Table = ({ list,sortKey,isSortReverse,onSort,onDismiss }) =>{
-  const sortedList = SORTS[sortKey](list);
-   const reverseSortedList = isSortReverse
-     ? sortedList.reverse()
-     : sortedList;
+export default class Table extends Component {
+
+  constructor(props) {
+      super(props);
+      this.state = {
+        sortKey: 'NONE',
+        isSortReverse: false
+      };
+      this.onSort = this.onSort.bind(this);
+    }
+
+    onSort(sortKey) {
+      const isSortReverse  = this.state.sortKey === sortKey && !this.state.isSortReverse;
+        this.setState({ sortKey,isSortReverse });
+      }
+
+  render() {
+     const {list,onDismiss} = this.props;
+     const {sortKey,isSortReverse} = this.state;
+     const sortedList = SORTS[sortKey](list);
+     const reverseSortedList = isSortReverse? sortedList.reverse(): sortedList;
      return(
 <div className="table">
 <div className="table-header">
       <span style={{ width: '40%' }}>
         <Sort
           sortKey={'TITLE'}
-          onSort={onSort}
+          onSort={this.onSort}
           isSortReverse={isSortReverse}
           activeSortKey={sortKey}
         >
@@ -69,7 +85,7 @@ const Table = ({ list,sortKey,isSortReverse,onSort,onDismiss }) =>{
       <span style={{ width: '30%' }}>
         <Sort
           sortKey={'AUTHOR'}
-          onSort={onSort}
+          onSort={this.onSort}
           isSortReverse={isSortReverse}
           activeSortKey={sortKey}
         >
@@ -79,7 +95,7 @@ const Table = ({ list,sortKey,isSortReverse,onSort,onDismiss }) =>{
       <span style={{ width: '10%' }}>
         <Sort
           sortKey={'COMMENTS'}
-          onSort={onSort}
+          onSort={this.onSort}
           isSortReverse={isSortReverse}
           activeSortKey={sortKey}
         >
@@ -89,7 +105,7 @@ const Table = ({ list,sortKey,isSortReverse,onSort,onDismiss }) =>{
       <span style={{ width: '10%' }}>
         <Sort
           sortKey={'POINTS'}
-          onSort={onSort}
+          onSort={this.onSort}
           isSortReverse={isSortReverse}
           activeSortKey={sortKey}
         >
@@ -118,6 +134,8 @@ const Table = ({ list,sortKey,isSortReverse,onSort,onDismiss }) =>{
 </div>)
 }
 
+}
+
 Table.propTypes = {
   list: PropTypes.arrayOf(
     PropTypes.shape({
@@ -130,5 +148,3 @@ Table.propTypes = {
   ).isRequired,
   onDismiss: PropTypes.func.isRequired,
 };
-
-export default Table;
