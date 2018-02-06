@@ -21,8 +21,5 @@
     "eject": "react-scripts eject",
     "heroku-prebuild": "echo This runs before Heroku installs your dependencies.",
     "heroku-postbuild": "echo This runs afterwards."
-  },
-  "engines": {
-    "node": "8.9.4"
   }
 }
